@@ -1,26 +1,26 @@
 name: Prettier Lint Check
-
 on:
-  pull_request:
-    branches: [main]
   push:
+  pull_request:
   repository_dispatch:
 
 jobs:
-  prettier:
+  run-linters:
+    name: Run Linters
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
-          # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
-          persist-credentials: false
+      - name: Checkout Git repo
+        uses: actions/checkout@v2
 
-      - name: Prettify code
-        uses: creyD/prettier_action@v4.2
+      - name: Cache node_modules
+        uses: actions/cache@v2
         with:
-          dry: True
-          prettier_options: "--check **/*.js"
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run check linters
+        run: yarn prettier -c **/*.js

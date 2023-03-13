@@ -2,7 +2,17 @@
 const fs = require("node:fs");
 
 const CONFIG_FILE = __dirname + "/../config.json";
-const DEFAULT_CONFIG = {};
+const DEFAULT_CONFIG = {
+  xpost: {
+    servers: {
+      pbr: {
+        label: "ACM Cyber & PBR",
+        description: "UCLA's cybersecurity club and competitive CTF team!",
+        id: process.env.GUILD_ID,
+      },
+    },
+  },
+};
 
 let config;
 

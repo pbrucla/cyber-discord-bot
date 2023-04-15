@@ -153,7 +153,7 @@ module.exports = {
         let files = [];
         try {
           let info = await fetchNetworkPingInfo(serverConfig.ip);
-          console.log("[!server] " + JSON.stringify(info));
+          console.log("[/server] " + JSON.stringify(info));
           let embed = new EmbedBuilder()
             .setColor(0x31f766)
             .setTitle("Server is up!")
@@ -214,7 +214,7 @@ module.exports = {
         }
       } else {
         await interaction.reply({
-          content: "!server isn't configured to check any server currently.",
+          content: "/server isn't configured to check any server currently.",
           ephemeral: true,
         });
       }
@@ -223,13 +223,13 @@ module.exports = {
       switch (serverConfig.allowedChannels.length) {
         case 0:
           suggestion =
-            "[WARN] !server isn't configured to be runnable in any channel!";
+            "[WARN] /server isn't configured to be runnable in any channel!";
           break;
         case 1:
-          suggestion = `!server can only be run in <#${serverConfig.allowedChannels[0]}>!`;
+          suggestion = `/server can only be run in <#${serverConfig.allowedChannels[0]}>!`;
           break;
         default:
-          suggestion = `!server can only be run in a private channel!`;
+          suggestion = `/server can only be run in a private channel!`;
           break;
       }
       await interaction.reply({

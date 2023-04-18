@@ -24,3 +24,48 @@ let reminders = sequelize.define("reminders", {
 reminders.sync();
 
 module.exports.reminders = reminders;
+
+verifiedUsers = sequelize.define("VerifiedUsers", {
+  discordID: {
+    type: Sequelize.STRING,
+    unique: true,
+    allowNull: false,
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    primaryKey: true,
+  },
+  university: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    defaultValue: "UCLA",
+  },
+});
+
+verifiedUsers.sync();
+
+module.exports.verifiedUsers = verifiedUsers;
+
+verifyRequests = sequelize.define("VerificationRequest", {
+  discordID: {
+    type: Sequelize.STRING,
+    primaryKey: true,
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+  verifyToken: {
+    type: Sequelize.UUIDV4,
+    allowNull: false,
+  },
+  expiration: {
+    type: Sequelize.DATE,
+    allowNull: false,
+  },
+});
+
+verifyRequests.sync();
+
+module.exports.verifyRequests = verifyRequests;

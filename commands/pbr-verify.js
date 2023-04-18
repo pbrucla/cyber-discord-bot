@@ -1,28 +1,6 @@
 const { google } = require("googleapis");
 
-const { JWT } = require("google-auth-library");
-const credentials_jwt = require("../credentials.json");
-
-// If modifying these scopes, delete token.json.
-const SCOPES = [
-  "https://www.googleapis.com/auth/spreadsheets.readonly",
-  "https://www.googleapis.com/auth/forms.body.readonly",
-];
-// The file token.json stores the user's access and refresh tokens, and is
-// created automatically when the authorization flow completes for the first
-// time.
-
-/**
- * Load or request or authorization to call APIs.
- *
- */
-async function authorize() {
-  return new JWT({
-    email: credentials_jwt.client_email,
-    key: credentials_jwt.private_key,
-    scopes: SCOPES,
-  });
-}
+const { authorize } = require("../utilities/google-auth");
 
 const config = require("../utilities/config");
 

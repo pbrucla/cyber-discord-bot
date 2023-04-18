@@ -1,26 +1,6 @@
 const { google } = require("googleapis");
 
-const { JWT } = require("google-auth-library");
-const credentials_jwt = require("../credentials.json");
-
-// If modifying these scopes, delete token.json.
-const SCOPES = [
-  "https://www.googleapis.com/auth/spreadsheets.readonly",
-  "https://www.googleapis.com/auth/forms.body.readonly",
-  "https://www.googleapis.com/auth/forms.responses.readonly",
-];
-
-/**
- * Load or request or authorization to call APIs.
- *
- */
-async function authorize() {
-  return new JWT({
-    email: credentials_jwt.client_email,
-    key: credentials_jwt.private_key,
-    scopes: SCOPES,
-  });
-}
+const { authorize } = require("../utilities/google-auth");
 
 const { randomUUID } = require("crypto");
 const config = require("../utilities/config");

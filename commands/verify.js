@@ -101,6 +101,12 @@ module.exports = {
                   1000
             ).toISOString(),
         });
+        if (res.data.responses === undefined) {
+          await interaction.followUp(
+              "No submission found. Either you have not submitted the form yet, submitted the form but changed one of the fields, or failed to submit the verification request within 15 minutes."
+          );
+          return;
+        }
         const match = res.data.responses.find((r) => {
           return (
             r.answers[config["verification"]["discord id field id"]].textAnswers

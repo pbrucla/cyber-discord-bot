@@ -1,10 +1,18 @@
+/*
+
+  Utility script to help populate config.json
+  Give a google form ID and it will print out the JSON of the form, allowing semi-easy
+  access to the question IDs for eventual parsing
+
+ */
+
 const readline = require("readline");
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-const google = require("@googleapis/forms");
+const { google } = require("googleapis");
 const { JWT } = require("google-auth-library");
 const credentials_jwt = require("../credentials.json");
 

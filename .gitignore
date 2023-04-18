@@ -155,3 +155,6 @@ config.json
 
 # Data folder (database)
 data/
+
+# using yarn, so no package-lock
+package-lock.json

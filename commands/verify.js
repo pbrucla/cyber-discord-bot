@@ -18,7 +18,7 @@ module.exports = {
     .setName("verify")
     .setDescription("Verify your school affiliation")
     .addSubcommand((subcommand) =>
-      subcommand.setName("ucla").setDescription("Verify as a ucla student")
+      subcommand.setName("ucla").setDescription("Verify as a UCLA student")
     ),
   async execute(interaction) {
     console.log(
@@ -26,17 +26,37 @@ module.exports = {
     );
     if (interaction.options.getSubcommand(false) === "ucla") {
       await interaction.deferReply({ ephemeral: true });
+      // if they already are verified with this discord id, give role and stop
+      let isVerified = await db.verifiedUsers.findOne({
+        where: { discordID: interaction.user.id },
+      });
+      if (isVerified && isVerified.university === "UCLA") {
+        const UCLARole = await interaction.guild.roles.cache.find(
+          (r) => r.name === "UCLA"
+        );
+        await interaction.member.roles.add(UCLARole);
+        await interaction.followUp(
+          "It appears you are already verified as a UCLA student."
+        );
+        return;
+      }
       let verification = await db.verifyRequests.findByPk(interaction.user.id);
-      if (verification === null || verification.expiration < Date.now()) {
+      if (verification === null || verification.expiration < new Date()) {
         if (verification !== null) {
           await verification.destroy();
         }
+        const expr = new Date().setTime(
+          new Date().getTime() +
+            parseInt(
+              config["verification"]["verification max time in minutes"]
+            ) *
+              60000
+        );
         verification = await db.verifyRequests.create({
           discordID: interaction.user.id,
           email: null,
           verifyToken: randomUUID(),
-          expiration:
-            Date.now() + config["verification max time in minutes"] * 60 * 1000,
+          expiration: expr,
         });
       }
       let link = config["verification"]["ucla verification link"]
@@ -76,82 +96,78 @@ module.exports = {
         where: {
           discordID: interaction.user.id,
           verifyToken: uuid,
-          expiration: { [Op.gt]: Date.now() },
+          expiration: { [Op.gt]: new Date() },
         },
       });
-      console.log(uuid);
       if (verifyRequest === null) {
         await interaction.followUp(
           "No active verification request was found for your discord account. Re-run the /verify command again."
         );
-      } else {
-        let auth = await authorize();
-        const forms = google.forms({
-          version: "v1",
-          auth: auth,
-        });
-        const res = await forms.forms.responses.list({
-          formId: config["verification"]["ucla verification form id"],
-          filter:
-            "timestamp > " +
-            new Date(
-              Date.now() -
-                config["verification"]["verification max time in minutes"] *
-                  60 *
-                  1000
-            ).toISOString(),
-        });
-        if (res.data.responses === undefined) {
-          await interaction.followUp(
-              "No submission found. Either you have not submitted the form yet, submitted the form but changed one of the fields, or failed to submit the verification request within 15 minutes."
-          );
-          return;
-        }
-        const match = res.data.responses.find((r) => {
-          return (
-            r.answers[config["verification"]["discord id field id"]].textAnswers
-              .answers[0].value === interaction.user.id &&
-            r.answers[config["verification"]["discord name field id"]]
-              .textAnswers.answers[0].value === interaction.user.tag &&
-            r.answers[config["verification"]["verification token field id"]]
-              .textAnswers.answers[0].value === uuid
-          );
-        });
-
-        if (match === undefined) {
-          await interaction.followUp(
-            "No submission found. Either you have not submitted the form yet, submitted the form but changed one of the fields, or failed to submit the verification request within 15 minutes."
-          );
-          return;
-        }
-        console.log("MATCH: " + JSON.stringify(match));
-        await verifyRequest.destroy();
-        const UCLARole = await interaction.guild.roles.cache.find(
-          (r) => r.name === "UCLA"
-        );
-        // Check if email was already used, and if so, remove role from old user if they exist
-        const oldRecord = await db.verifiedUsers.findByPk(
-          match.respondentEmail
-        );
-        if (oldRecord !== null) {
-          const oldUser = await interaction.guild.members.fetch(
-            await oldRecord.discordID
-          );
-          try {
-            await oldUser.roles.remove(UCLARole);
-          } catch {
-            // Don't crash if can't find old user
-          }
-          await oldRecord.destroy();
-        }
-        await db.verifiedUsers.create({
-          discordID: interaction.user.id,
-          email: match.respondentEmail,
-          university: "UCLA",
-        });
-        await interaction.member.roles.add(UCLARole);
-        await interaction.followUp("You have been verified as a UCLA student!");
+        return;
       }
+      let auth = await authorize();
+      const forms = google.forms({
+        version: "v1",
+        auth: auth,
+      });
+      const res = await forms.forms.responses.list({
+        formId: config["verification"]["ucla verification form id"],
+        filter:
+          "timestamp > " +
+          new Date(
+            new Date() -
+              config["verification"]["verification max time in minutes"] *
+                60 *
+                1000
+          ).toISOString(),
+      });
+      if (res.data.responses === undefined) {
+        await interaction.followUp(
+          "No submission found. Either you have not submitted the form yet, submitted the form but changed one of the fields, or failed to submit the verification request within 15 minutes."
+        );
+        return;
+      }
+      const match = res.data.responses.find((r) => {
+        return (
+          r.answers[config["verification"]["discord id field id"]].textAnswers
+            .answers[0].value === interaction.user.id &&
+          r.answers[config["verification"]["discord name field id"]].textAnswers
+            .answers[0].value === interaction.user.tag &&
+          r.answers[config["verification"]["verification token field id"]]
+            .textAnswers.answers[0].value === uuid
+        );
+      });
+
+      if (match === undefined) {
+        await interaction.followUp(
+          "No submission found. Either you have not submitted the form yet, submitted the form but changed one of the fields, or failed to submit the verification request within 15 minutes."
+        );
+        return;
+      }
+      await verifyRequest.destroy();
+      const UCLARole = await interaction.guild.roles.cache.find(
+        (r) => r.name === "UCLA"
+      );
+      // Check if email was already used, and if so, remove role from old user if they exist
+      const oldRecord = await db.verifiedUsers.findByPk(match.respondentEmail);
+      if (oldRecord !== null) {
+        const oldUser = await interaction.guild.members.fetch(
+          await oldRecord.discordID
+        );
+        try {
+          await oldUser.roles.remove(UCLARole);
+        } catch {
+          // Don't crash if can't find old user
+        }
+        await oldRecord.destroy();
+      }
+      await db.verifiedUsers.create({
+        discordID: interaction.user.id,
+        email: match.respondentEmail,
+        university: "UCLA",
+      });
+      await interaction.member.roles.add(UCLARole);
+      await interaction.followUp("You have been verified as a UCLA student!");
     } else {
       await interaction.reply({
         ephemeral: true,

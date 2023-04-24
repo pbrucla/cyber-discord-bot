@@ -36,29 +36,28 @@ module.exports = {
         );
         await interaction.member.roles.add(UCLARole);
         await interaction.followUp(
-          "It appears you are already verified as a UCLA student."
+          "It appears you are already verified as a UCLA student. If you didn't already have it, the UCLA role was given to you."
         );
         return;
       }
       let verification = await db.verifyRequests.findByPk(interaction.user.id);
-      if (verification === null || verification.expiration < new Date()) {
-        if (verification !== null) {
-          await verification.destroy();
-        }
-        const expr = new Date().setTime(
-          new Date().getTime() +
-            parseInt(
-              config["verification"]["verification max time in minutes"]
-            ) *
-              60000
-        );
-        verification = await db.verifyRequests.create({
-          discordID: interaction.user.id,
-          email: null,
-          verifyToken: randomUUID(),
-          expiration: expr,
-        });
+      if (verification !== null) {
+        await verification.destroy();
       }
+      const expr = new Date().setTime(
+        new Date().getTime() +
+          parseInt(
+            config["verification"]["verification max time in minutes"]
+          ) *
+            60000
+      );
+      verification = await db.verifyRequests.create({
+        discordID: interaction.user.id,
+        email: null,
+        verifyToken: randomUUID(),
+        expiration: expr,
+      });
+
       let link = config["verification"]["ucla verification link"]
         .replace("{{USERNAME}}", encodeURIComponent(interaction.user.tag))
         .replace("{{DISCORDID}}", encodeURIComponent(interaction.user.id))
@@ -83,7 +82,7 @@ module.exports = {
 
       await interaction.followUp({
         content:
-          'Submit a verification request using the link below, and then click the "check verification" button after you have submitted.\n\nThis verification request will expire in 15 minutes.',
+          `Submit a verification request using the link below, and then click the "check verification" button after you have submitted.\n\nThis verification request will expire in ${config["verification"]["verification max time in minutes"]} minutes.`,
         components: [row],
       });
     }
@@ -101,7 +100,7 @@ module.exports = {
       });
       if (verifyRequest === null) {
         await interaction.followUp(
-          "No active verification request was found for your discord account. Re-run the /verify command again."
+          "This verification request is invalid. Re-run the /verify command again."
         );
         return;
       }
@@ -118,12 +117,12 @@ module.exports = {
             new Date() -
               config["verification"]["verification max time in minutes"] *
                 60 *
-                1000
+                1000 * 1.2
           ).toISOString(),
       });
       if (res.data.responses === undefined) {
         await interaction.followUp(
-          "No submission found. Either you have not submitted the form yet, submitted the form but changed one of the fields, or failed to submit the verification request within 15 minutes."
+          "No submission found. Either you have not submitted the form yet or submitted the form but changed one of the fields."
         );
         return;
       }

@@ -46,9 +46,7 @@ module.exports = {
       }
       const expr = new Date().setTime(
         new Date().getTime() +
-          parseInt(
-            config["verification"]["verification max time in minutes"]
-          ) *
+          parseInt(config["verification"]["verification max time in minutes"]) *
             60000
       );
       verification = await db.verifyRequests.create({
@@ -81,8 +79,7 @@ module.exports = {
       );
 
       await interaction.followUp({
-        content:
-          `Submit a verification request using the link below, and then click the "check verification" button after you have submitted.\n\nThis verification request will expire in ${config["verification"]["verification max time in minutes"]} minutes.`,
+        content: `Submit a verification request using the link below, and then click the "check verification" button after you have submitted.\n\nThis verification request will expire in ${config["verification"]["verification max time in minutes"]} minutes.`,
         components: [row],
       });
     }
@@ -117,7 +114,8 @@ module.exports = {
             new Date() -
               config["verification"]["verification max time in minutes"] *
                 60 *
-                1000 * 1.2
+                1000 *
+                1.2
           ).toISOString(),
       });
       if (res.data.responses === undefined) {

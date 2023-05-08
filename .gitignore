@@ -151,7 +151,7 @@ dist
 .DS_Store
 
 # Cyber Bot Config
-config.json
+# config.json
 
 # Data folder (database)
 data/

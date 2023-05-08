@@ -1,0 +1,19 @@
+{
+  "pbr": {
+    "current season": {
+      "Quarter": "Spring",
+      "Year": 2023
+    },
+    "application link": "https://docs.google.com/forms/d/e/1FAIpQLSe_i10QhSDEA4aq8KxoUNnMDDc3outTttifnCUYuaTkBB7v-A/viewform?usp=pp_url&entry.1582215088=Yes&entry.1090414111={{DISCORD_USERNAME}}&entry.511297996={{DISCORD_ID}}&entry.1959556633={{YEARS_PBR}}",
+    "application sheet id": "1j1G_uzDKmjJ4GNHM4f3OV-1YI2fcsV29nf3igUwHpqI",
+    "application sheet discordid range": "Form Responses 1!G2:G"
+  },
+  "verification": {
+    "ucla verification link": "https://docs.google.com/forms/d/e/1FAIpQLSc8HjWXAEitjmtyhyEAKlSaohSef8ckhWCrphckIvXz-x_K1w/viewform?usp=pp_url&entry.63146092={{USERNAME}}&entry.909775129={{DISCORDID}}&entry.1456556543={{UUID}}",
+    "ucla verification form id": "1wrPEapq4R7q1NBu5J1WtMx6OhDg1xGnmKR6rWc6-u7k",
+    "discord id field id": "363a1119",
+    "discord name field id":"03c3886c",
+    "verification token field id":"56d149ff",
+    "verification max time in minutes": 15
+  }
+}

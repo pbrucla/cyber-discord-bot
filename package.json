@@ -7,7 +7,6 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "deploy": "node deploy.js",
     "fix": "prettier --write index.js commands/*.js",
     "fmt": "pnpm run fix"
   },

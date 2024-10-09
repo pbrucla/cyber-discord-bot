@@ -1,0 +1,25 @@
+{
+  "name": "cyber-discord-bot",
+  "version": "2.0.0",
+  "description": "ACM Cyber's pet cybrick!",
+  "author": "ACM Cyber <uclacyber@gmail.com> (https://www.acmcyber.com/)",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "node deploy.js",
+    "fix": "prettier --write index.js commands/*.js",
+    "fmt": "pnpm run fix"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@9.12.1"
+}

@@ -1,0 +1,14 @@
+# Node
+node_modules/
+pnpm-lock.yaml
+
+# IDEs
+.vscode/*
+!.vscode/settings.json
+.idea
+.DS_Store
+
+# Config
+.env
+.env.*
+!.env.example

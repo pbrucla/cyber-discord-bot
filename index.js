@@ -20,7 +20,7 @@ for (const file of commandFiles) {
   const command = await import(filePath)
   if ("data" in command && "execute" in command) {
     client.commands.set(command.data.name, command)
-    commandsToRegister.push(command.data)
+    commandsToRegister.push(command.data.toJSON())
   } else {
     throw `The command at ${filePath} is missing a required "data" or "execute" property.`
   }

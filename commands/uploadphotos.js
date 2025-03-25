@@ -14,24 +14,24 @@ export async function execute(interaction) {
 
   let auth = await authorize()
   const drive = google.drive({ version: "v3", auth })
-  const folderId = "[FOLDER ID]" // replace this with the id of the desired folder (the part of the url after "folders/"). note that the bot needs to have access to the folder (you can share the folder with the email associated with the service account)
+  const folderId = "[FOLDER ID]" // replace this with the id of the desired folder (the part of the url after "folders/")
   const downloadDir = path.join(import.meta.dirname, "..", "downloads")
+  let count = 0
 
   for (const [key, value] of message["attachments"]) {
     if (value["contentType"].substring(0, 5) !== "image") continue
-    // credit to https://github.com/ZacTimTam/Upload-To-GDrive-Discord-Bot/tree/main for the WriteStream sections
+    /* credit to https://github.com/ZacTimTam/Upload-To-GDrive-Discord-Bot/tree/main for the WriteStream sections */
     try {
       const filePath = path.join(downloadDir, value["name"])
       const response = await axios.get(value["url"], { responseType: "stream" })
       const writer = fs.createWriteStream(filePath)
-      response.data.pipe(writer) // downloads the image
+      response.data.pipe(writer)
       await new Promise((resolve, reject) => {
         writer.on("finish", resolve)
         writer.on("error", reject)
       })
 
       const res = await drive.files.create({
-        // uploads the image
         requestBody: {
           name: value["title"],
           mimeType: value["contentType"],
@@ -44,9 +44,14 @@ export async function execute(interaction) {
       })
       // console.log(res.data);
       await fs.promises.unlink(filePath)
+      count++
     } catch (error) {
-      console.error(`Failed to process file ${file.name}:`, error)
+      console.error(`Failed to process file ${value["name"]}:`, error)
     }
   }
-  interaction.editReply("Photos successfully uploaded!")
+  if (count === 1) {
+    interaction.editReply(`1 photo uploaded!`)
+  } else {
+    interaction.editReply(`${count} photos uploaded!`)
+  }
 }

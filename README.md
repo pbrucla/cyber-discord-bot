@@ -16,8 +16,8 @@ A Discord bot made for ACM Cyber & Psi Beta Rho. :)
 - As this bot uses a feature of GSuite (Google Drive), running this bot will require obtaining some credentials. You do NOT need a project with billing enabled to do this.
 1. Follow the instructions here (you can ignore the optional steps): [https://cloud.google.com/iam/docs/service-accounts-create](https://cloud.google.com/iam/docs/service-accounts-create)
 2. Once in the service account, go to keys --> add key --> create new key --> JSON, download and save this file as `credentials.json`
-3. Enable the APIs: Go to Google Workspace --> APIs, and enable the `Google Drive` APIs.
-4. You may find [this documentation](https://developers.google.com/drive/api/guides/about-sdk) helpful for working with the Google Drive API.
+3. Enable the API: Go to Google Workspace --> APIs, and enable the `Google Drive` API.
+4. To run this bot, you must also designate a Google Drive folder for the bot to upload photos to. This can be done by creating a Drive folder, sharing it with the email of the service account, and replacing the "[FOLDER ID]" in uploadphotos.js with the id of that folder (the section of the url after "folders/").
 
 ## Running
 0. Run `pnpm start` to run the bot

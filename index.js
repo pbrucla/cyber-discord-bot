@@ -35,7 +35,11 @@ console.log(`Registered ${registerResponse.length} commands!`)
 
 client.on(Events.InteractionCreate, async interaction => {
   let command
-  if (interaction.isChatInputCommand()) {
+  if (
+    interaction.isChatInputCommand() ||
+    interaction.isMessageContextMenuCommand() ||
+    interaction.isUserContextMenuCommand()
+  ) {
     command = interaction.client.commands.get(interaction.commandName)
   }
 

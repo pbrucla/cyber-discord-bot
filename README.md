@@ -6,11 +6,18 @@ A Discord bot made for ACM Cyber & Psi Beta Rho. :)
 0. Install Node and make sure corepack is enabled (`corepack enable`).
 1. Download and copy `.env.example` as `.env`
 2. Run `pnpm install` to install dependencies
-3. Either ask me for your own discord bot user OR Create your own discord bot application: https://discordjs.guide/preparations/setting-up-a-bot-application.html
-4. [Invite your discord bot to our shared testing discord server](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#creating-and-using-your-invite-link). If you need admin, let me (Alec) know.
+3. Either ask the infrastructure lead for your own discord bot user OR Create your own discord bot application: https://discordjs.guide/preparations/setting-up-a-bot-application.html
+4. [Invite your discord bot to a testing discord server.](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#creating-and-using-your-invite-link) 
 5. Add the token from step 3 into the `.env` in the proper location. Make sure there are no extra spaces between the text and the equals sign!
 6. Replace DISCORD_CLIENT_ID with the OAuth Client id of your Discord application.
 7. Before making new changes, do `git checkout -b BRANCHNAME` where `BRANCHNAME` is a name for whatever feature you are working on.
+
+## Google Service Account credentials
+- As this bot uses a feature of GSuite (Google Drive), running this bot will require obtaining some credentials. You do NOT need a project with billing enabled to do this.
+1. Follow the instructions here (you can ignore the optional steps): [https://cloud.google.com/iam/docs/service-accounts-create](https://cloud.google.com/iam/docs/service-accounts-create)
+2. Once in the service account, go to keys --> add key --> create new key --> JSON, download and save this file as `credentials.json`
+3. Enable the API: Go to Google Workspace --> APIs, and enable the `Google Drive` API.
+4. To run the uploading photos feature of this bot, you must also designate a Google Drive folder for the bot to upload photos to. This can be done by creating a Drive folder, sharing it with the email of the service account, and setting the FOLDER_ID environment variable in `.env` to the id of that folder (the section of the url after "folders/").
 
 ## Running
 0. Run `pnpm start` to run the bot
